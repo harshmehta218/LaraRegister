@@ -10,16 +10,11 @@ class Booking extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['user_id', 'booking_type', 'booking_date', 'booking_sloat', 'booking_time'];
+    protected $fillable = ['name', 'email', 'booking_type', 'booking_date', 'booking_sloat', 'booking_time'];
 
     protected $hidden = [
         'created_at',
         'updated_at',
         'deleted_at'
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

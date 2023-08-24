@@ -37,40 +37,39 @@ class BookingService
 
     public function resource($id)
     {
-        $booking = Booking::with('user')->FindOrFail($id);
+        $booking = Booking::FindOrFail($id);
         return $booking;
     }
 
     public function store($requestArray)
     {
-        $userBooking = Booking::where('user_id', $requestArray['user_id'])->where('booking_type', $requestArray['booking_type'])->where('booking_date', $requestArray['booking_date'])->first();
+        $userBooking = Booking::where('email', $requestArray['email'])->where('booking_type', $requestArray['booking_type'])->where('booking_date', $requestArray['booking_date'])->first();
         $bookingType = Booking::where('booking_type', $requestArray['booking_type'])->where('booking_date', $requestArray['booking_date'])->first();
 
+
         if ($userBooking != null || $bookingType != null) {
-            $message['booking']['faild']['message'] = "another user have already booked today's sloat, please try diffrent sloat";
-            return $message;
+            return redirect()->back()->with('message', "another user have already booked today's sloat, please try diffrent sloat");
         }
 
         if ($requestArray['booking_type'] == 'full_day' && $requestArray['booking_sloat'] != 'fullday') {
-            $message['booking']['wrongSloat']['message'] = "Please enter valid sloat name (like fullday)";
-            return $message;
+            return redirect()->back()->with('message', 'Please enter valid sloat name (like fullday)');
         }
-
         if ($requestArray['booking_type'] == 'half_day' && $requestArray['booking_sloat'] == 'fullday') {
-            $message['booking']['wrongSloat']['message'] = "Please enter valid sloat name (like morning, evening)";
-            return $message;
+            return redirect()->back()->with('message', 'Please enter valid sloat name (like morning, evening)');
         }
 
         $bookingService = Booking::create([
-            'user_id' => $requestArray['user_id'],
+            'name' => $requestArray['name'],
+            'email' => $requestArray['email'],
             'booking_type' => $requestArray['booking_type'],
             'booking_date' => $requestArray['booking_date'],
             'booking_sloat' => $requestArray['booking_sloat'],
             'booking_time' => $requestArray['booking_time'],
         ]);
 
-        $bookingObjectWithUser = $this->resource($bookingService->id);
-        return $bookingObjectWithUser;
+        if ($bookingService) {
+            return redirect()->route('bookings.index')->with('message', 'your booking is sucessfully');
+        }
     }
 
     public function update($requestArray, $id)

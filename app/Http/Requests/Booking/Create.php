@@ -24,7 +24,8 @@ class Create extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required',
+            'name' => 'required',
+            'email' => 'required|unique:users,email',
             'booking_type' => 'required|in:full_day,half_day',
             'booking_date' => 'required|date_format:Y-m-d',
             'booking_sloat' => 'required|in:morning,evening,fullday',

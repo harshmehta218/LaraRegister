@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->string('name');
+            $table->string('email')->unique();
             $table->enum('booking_type', ['full_day', 'half_day']);
             $table->date('booking_date');
             $table->enum('booking_sloat', ['morning', 'evening', 'fullday']);
